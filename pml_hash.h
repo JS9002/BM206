@@ -12,7 +12,7 @@
 using namespace std;
 
 typedef struct metadata {
-    size_t size;            // ԭͰ���� 
+    size_t size;            // Ô­Í°ÊýÁ¿ 
     size_t level;           // level of hash
     uint64_t next;          // the index of the next split hash table
     uint64_t overflow_num;  // amount of overflow hash tables 
@@ -52,6 +52,6 @@ public:
     int search(const uint64_t &key, uint64_t &value);
     int remove(const uint64_t &key);
     int update(const uint64_t &key, const uint64_t &value);
-    void print();
+    void print(); 
 	
 };
