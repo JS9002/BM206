@@ -12,7 +12,7 @@
 using namespace std;
 
 typedef struct metadata {
-    size_t size;            // Ô­Í°ÊýÁ¿ 
+    size_t size;            // normal table_num
     size_t level;           // level of hash
     uint64_t next;          // the index of the next split hash table
     uint64_t overflow_num;  // amount of overflow hash tables 
