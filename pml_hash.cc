@@ -211,15 +211,15 @@ void PMLHash::print(){
 		j = 0;
 		while(tmp){
 			if(j == 0) cout << " table " << i << " :  " ;
-				else cout << " ----overflow : " ;
+				else cout << " -- overflow : " ;
 			for(int k = 0 ; k < table[tmp].fill_num ; k++){
-				cout << "( " << table[tmp].kv_arr[k].key << " , "<<table[tmp].kv_arr[k].value << ") ";  
+				cout << "(" << table[tmp].kv_arr[k].key << ","<<table[tmp].kv_arr[k].value << ") ";  
 			}
 			cout << endl;
 			tmp = table[tmp].next_offset;
 			j++;
 		}
-		cout << endl << endl;
+		cout << endl;
 	}
 }
 
