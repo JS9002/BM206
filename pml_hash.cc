@@ -1,6 +1,6 @@
 #include "pml_hash.h"
-
-//³õÊ¼»¯¹şÏ£±í£¨ĞÂ½¨/¸²¸Ç£© 
+ 
+//åˆå§‹åŒ–å“ˆå¸Œè¡¨ï¼ˆæ–°å»º/è¦†ç›–ï¼‰ 
 PMLHash::PMLHash(const char* file_path) {
 	size_t mapped_len;
 	int is_pmem;
@@ -11,7 +11,7 @@ PMLHash::PMLHash(const char* file_path) {
 	meta = (metadata*)start_addr;
     table = (pm_table*)((char*)start_addr + sizeof(meta));
     
-    //³õÊ¼»¯Êı¾İ½á¹¹ 
+    //åˆå§‹åŒ–æ•°æ®ç»“æ„ 
 	if(meta->size == 0){
 		meta->size = 1;
 		meta->level = 0;
@@ -25,12 +25,12 @@ PMLHash::PMLHash(const char* file_path) {
 	}
 }
 
-//¹Ø±ÕÎÄ¼ş 
+//å…³é—­æ–‡ä»¶ 
 PMLHash::~PMLHash() {
 	pmem_unmap(start_addr, FILE_SIZE);
 }
 
-//·ÖÁÑÍ° 
+//åˆ†è£‚æ¡¶ 
 void PMLHash::split() {
 	uint64_t index = meta->next;
 	uint64_t newt = meta->next + (1<<(meta->level)) ;
@@ -40,9 +40,9 @@ void PMLHash::split() {
 	tmp2 = index;
 	j = 0;
 	k = 0;
-	while(tmp2){        //ÓÉtmp2ºÍi±éÀúÒª·ÖÁÑµÄÍ°
+	while(tmp2){        //ç”±tmp2å’Œiéå†è¦åˆ†è£‚çš„æ¡¶
 		for(i = 0 ; i < table[tmp2].fill_num ; i++ ){
-			//ÓÉtmpºÍjÈ·¶¨ÁôÔÚ¾ÉÍ°µÄÊı¾İµÄÎ»ÖÃ
+			//ç”±tmpå’Œjç¡®å®šç•™åœ¨æ—§æ¡¶çš„æ•°æ®çš„ä½ç½®
 			if(table[tmp2].kv_arr[i].key % (1<<(meta->level+1)) + 1 == index){
 				table[tmp].kv_arr[j].key = table[tmp2].kv_arr[i].key;
 				table[tmp].kv_arr[j].value = table[tmp2].kv_arr[i].value;
@@ -52,7 +52,7 @@ void PMLHash::split() {
 					j = 0;
 				}
 			}
-			else{   //ÓÉnewtºÍkÈ·¶¨ÁôÔÚĞÂÍ°µÄÊı¾İµÄÎ»ÖÃ
+			else{   //ç”±newtå’Œkç¡®å®šç•™åœ¨æ–°æ¡¶çš„æ•°æ®çš„ä½ç½®
 				if(k == TABLE_SIZE){
 					table[newt].fill_num = TABLE_SIZE;
 					newt = newOverflowIndex();
@@ -66,20 +66,20 @@ void PMLHash::split() {
 		tmp2 = table[tmp2].next_offset;
 	}
 	
-	recycle(table[tmp].next_offset); //»ØÊÕÒç³öÍ° 
+	recycle(table[tmp].next_offset); //å›æ”¶æº¢å‡ºæ¡¶ 
 	table[tmp].fill_num = j;
 	table[tmp].next_offset = 0;
-	table[newt].fill_num = k;   //ĞŞ¸Ä´æÓĞÊı¾İµÄÍ°µÄĞÅÏ¢ 
+	table[newt].fill_num = k;   //ä¿®æ”¹å­˜æœ‰æ•°æ®çš„æ¡¶çš„ä¿¡æ¯ 
 	meta->size++;
 	if(meta->next == (1<<(meta->level))){
 		meta->next = 1;
-		meta->level++;   //Ô­Í°È«²¿·ÖÁÑ£¬ĞŞ¸ÄÉî¶ÈºÍnext 
+		meta->level++;   //åŸæ¡¶å…¨éƒ¨åˆ†è£‚ï¼Œä¿®æ”¹æ·±åº¦å’Œnext 
 	}
 	else meta->next++;
 	pmem_persist(start_addr, FILE_SIZE);
 }
 
-//¼ÆËãÔ­Í°ÏÂ±ê 
+//è®¡ç®—åŸæ¡¶ä¸‹æ ‡ 
 uint64_t PMLHash::hashFunc(const uint64_t &key ) {
 	uint64_t index = key % (1<< meta->level) + 1;
 	if(index < meta->next)
@@ -88,44 +88,44 @@ uint64_t PMLHash::hashFunc(const uint64_t &key ) {
 }
 
 
-//·ÖÅäÒ»¸öÒç³öÍ°£¬·µ»ØÆäÏÂ±ê 
+//åˆ†é…ä¸€ä¸ªæº¢å‡ºæ¡¶ï¼Œè¿”å›å…¶ä¸‹æ ‡ 
 uint64_t PMLHash::newOverflowIndex(){
-	uint64_t recycle_head = MAX_IDX + 1;   //»ØÊÕÍ°µÄÍ·²¿ 
+	uint64_t recycle_head = MAX_IDX + 1;   //å›æ”¶æ¡¶çš„å¤´éƒ¨ 
 	uint64_t rh = recycle_head;
     uint64_t index;
-	if(table[rh].next_offset){         //ÓĞ¿ÉÓÃµÄ»ØÊÕÍ° 
+	if(table[rh].next_offset){         //æœ‰å¯ç”¨çš„å›æ”¶æ¡¶ 
 		index = table[rh].next_offset;
 		table[rh].next_offset = table[index].next_offset;
 	}
 	else{
-		index = MAX_IDX - (meta->overflow_num); //´ÓÓÒÍù×óÕÒÒ»¸ö¿ÕÏĞÍ°×÷Òç³öÍ° 
-		if(index < (meta->size)) index = 0;  //Ã»ÓĞ¿ÉÓÃµÄÒç³öÍ° 
+		index = MAX_IDX - (meta->overflow_num); //ä»å³å¾€å·¦æ‰¾ä¸€ä¸ªç©ºé—²æ¡¶ä½œæº¢å‡ºæ¡¶ 
+		if(index < (meta->size)) index = 0;  //æ²¡æœ‰å¯ç”¨çš„æº¢å‡ºæ¡¶ 
 	}
 	return index; 
 }
 
 void PMLHash::recycle(uint64_t index){
 	uint64_t tmp = table[MAX_IDX + 1].next_offset;
-	while(index){         //»ØÊÕÒ»Á¬´®µÄÒç³öÍ° 
-		table[index].fill_num = 0;      //½«»ØÊÕÍ°µÄÊı¾İÉèÎªÎŞĞ§×´Ì¬ 
+	while(index){         //å›æ”¶ä¸€è¿ä¸²çš„æº¢å‡ºæ¡¶ 
+		table[index].fill_num = 0;      //å°†å›æ”¶æ¡¶çš„æ•°æ®è®¾ä¸ºæ— æ•ˆçŠ¶æ€ 
 		table[index].next_offset = tmp;
-		table[MAX_IDX + 1].next_offset = index; //²åÈë»ØÊÕÍ°Á´Í·
+		table[MAX_IDX + 1].next_offset = index; //æ’å…¥å›æ”¶æ¡¶é“¾å¤´
 		index = table[index].next_offset;
 		meta->overflow_num--;
 	}
 	pmem_persist(start_addr, FILE_SIZE);
 }
 
-//²åÈë¼üÖµ¶Ô 
+//æ’å…¥é”®å€¼å¯¹ 
 int PMLHash::insert(const uint64_t &key, const uint64_t &value) {
 	uint64_t index = hashFunc(key);
 	uint64_t tmp = index;
 	
-	while(table[tmp].fill_num == TABLE_SIZE){ //ÕÒµ½¿ÕµÄÍ° 
+	while(table[tmp].fill_num == TABLE_SIZE){ //æ‰¾åˆ°ç©ºçš„æ¡¶ 
 		if(table[tmp].next_offset == 0)
 			table[tmp].next_offset = newOverflowIndex();
 		tmp= table[tmp].next_offset;
-		if(tmp == 0)     //Ã»ÓĞ¿ÉÓÃÒç³ö¿Õ¼ä£¬²åÈëÊ§°Ü 
+		if(tmp == 0)     //æ²¡æœ‰å¯ç”¨æº¢å‡ºç©ºé—´ï¼Œæ’å…¥å¤±è´¥ 
 			return -1;
 	}
 	
@@ -138,10 +138,10 @@ int PMLHash::insert(const uint64_t &key, const uint64_t &value) {
 	return 0;
 }
 
-//¸ù¾İkey²éÕÒÏàÓ¦µÄvalue 
+//æ ¹æ®keyæŸ¥æ‰¾ç›¸åº”çš„value 
 int PMLHash::search(const uint64_t &key, uint64_t &value) {
 	uint64_t tmp = hashFunc(key);
-	while(tmp){  //±éÀúÔ­Í°¼°ÆäËùÓĞÒç³öÍ° 
+	while(tmp){  //éå†åŸæ¡¶åŠå…¶æ‰€æœ‰æº¢å‡ºæ¡¶ 
 		for(int i = 0 ; i < table[tmp].fill_num ; i++ ){
 			if(table[tmp].kv_arr[i].key == key){
 				value = table[tmp].kv_arr[i].value;
@@ -153,27 +153,27 @@ int PMLHash::search(const uint64_t &key, uint64_t &value) {
 	return -1;
 }
 
-//¸ù¾İkeyÉ¾³ıÄ³Ò»¼üÖµ¶Ô 
+//æ ¹æ®keyåˆ é™¤æŸä¸€é”®å€¼å¯¹ 
 int PMLHash::remove(const uint64_t &key) {
 	uint64_t index = hashFunc(key);
 	uint64_t tmp = index;
 	uint64_t tmp2 = index;
 
 	while(table[tmp].next_offset){
-		tmp2 = tmp;         //tmp2 index¶ÔÓ¦µÄ¡°µ¹ÊıµÚ¶ş¡±¸öÍ°£¨¿ÉÄÜÖ»ÓĞÒ»¸öÍ°£© 
-		tmp = table[tmp].next_offset;   //tmp×îºóÒ»¸öÍ°     
+		tmp2 = tmp;         //tmp2 indexå¯¹åº”çš„â€œå€’æ•°ç¬¬äºŒâ€ä¸ªæ¡¶ï¼ˆå¯èƒ½åªæœ‰ä¸€ä¸ªæ¡¶ï¼‰ 
+		tmp = table[tmp].next_offset;   //tmpæœ€åä¸€ä¸ªæ¡¶     
 	}
 	
 	while(index){     
 		for(int i = 0 ; i < table[index].fill_num ; i++ ){
 			if(table[index].kv_arr[i].key == key){
-				table[tmp].fill_num--;   //É¾³ıµÄÎ»ÖÃĞèÒªÓÉ¡°×îºóÒ»¸öÒç³öÍ°¡±µÄ×îºóÒ»¸öÔªËØÀ´Ìî³ä 
+				table[tmp].fill_num--;   //åˆ é™¤çš„ä½ç½®éœ€è¦ç”±â€œæœ€åä¸€ä¸ªæº¢å‡ºæ¡¶â€çš„æœ€åä¸€ä¸ªå…ƒç´ æ¥å¡«å…… 
 				table[index].kv_arr[i].value = table[tmp].kv_arr[table[tmp].fill_num].value;
 				table[index].kv_arr[i].key = table[tmp].kv_arr[table[tmp].fill_num].key;       
 
 				if((table[tmp].fill_num == 0) && (tmp != index)){
 					table[tmp2].next_offset = 0;
-					recycle(tmp);    //»ØÊÕ¿ÕµÄÒç³öÍ°
+					recycle(tmp);    //å›æ”¶ç©ºçš„æº¢å‡ºæ¡¶
 				}
 				pmem_persist(start_addr, FILE_SIZE);
 				return 0;
@@ -185,10 +185,10 @@ int PMLHash::remove(const uint64_t &key) {
 	return -1;
 }
 
-//¸üĞÂÄ³¸ökey¶ÔÓ¦µÄvalue 
+//æ›´æ–°æŸä¸ªkeyå¯¹åº”çš„value 
 int PMLHash::update(const uint64_t &key, const uint64_t &value) {
 	uint64_t tmp = hashFunc(key);  
-	while(tmp){   //±éÀú²éÕÒ 
+	while(tmp){   //éå†æŸ¥æ‰¾ 
 		for(int i = 0 ; i < table[tmp].fill_num ; i++){
 			if(table[tmp].kv_arr[i].key == key){
 				table[tmp].kv_arr[i].value = value;
@@ -202,7 +202,7 @@ int PMLHash::update(const uint64_t &key, const uint64_t &value) {
 	return -1; 
 }
 
-//Êä³öËùÓĞÍ° 
+//è¾“å‡ºæ‰€æœ‰æ¡¶ 
 void PMLHash::print(){
 	uint64_t tmp;
 	int i , j;
