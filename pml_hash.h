@@ -35,14 +35,13 @@ typedef struct pm_table {
 class PMLHash {
 private:
     void* start_addr;      // the start address of mapped file
-    void* overflow_addr;   // the start address of overflow table array
     metadata* meta;        // virtual address of metadata
     pm_table* table;   // virtual address of hash table array
 
     void split();
     uint64_t hashFunc(const uint64_t &key);
-	uint64_t newOverflowIndex();
-	void recycle(uint64_t index);
+    uint64_t newOverflowIndex();
+    void recycle(uint64_t index);
 public:
     PMLHash() = delete;
     PMLHash(const char* file_path);
