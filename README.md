@@ -1,2 +1,1 @@
-This is DBMS-project of BM206.
- 
+BM206
