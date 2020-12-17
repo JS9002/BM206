@@ -1,2 +1,2 @@
-This is DBMS-project.
+This is DBMS-project of BM206.
  
