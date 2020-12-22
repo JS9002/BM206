@@ -10,7 +10,7 @@ PMLHash::PMLHash(const char* file_path) {
 		exit(0);
 	}
 	meta = (metadata*)start_addr;
-    table = (pm_table*)((char*)start_addr + sizeof(meta));
+	table = (pm_table*)((char*)start_addr + sizeof(meta));
     
     //初始化数据结构 
 	if(meta->size == 0){
@@ -94,7 +94,7 @@ uint64_t PMLHash::hashFunc(const uint64_t &key ) {
 uint64_t PMLHash::newOverflowIndex(){
 	uint64_t recycle_head = MAX_IDX + 1;   //回收桶的头部 
 	uint64_t rh = recycle_head;
-    uint64_t index;
+	uint64_t index;
 	if(table[rh].next_offset){         //有可用的回收桶 
 		index = table[rh].next_offset;
 		table[rh].next_offset = table[index].next_offset;
@@ -217,7 +217,7 @@ void PMLHash::print(){
 		j = 0;
 		while(tmp){
 			if(j == 0) cout << " table " << i << " :  " ;
-				else cout << " ----overflow : " ;
+			else cout << " ----overflow : " ;
 			for(int k = 0 ; k < table[tmp].fill_num ; k++){
 				cout << "( " << table[tmp].kv_arr[k].key << " , "<<table[tmp].kv_arr[k].value << ") ";  
 			}
