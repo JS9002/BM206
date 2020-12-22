@@ -41,8 +41,8 @@ private:
 
     void split();
     uint64_t hashFunc(const uint64_t &key);
-	uint64_t newOverflowIndex();
-	void recycle(uint64_t index);
+    uint64_t newOverflowIndex();
+    void recycle(uint64_t index);
 public:
     PMLHash() = delete;
     PMLHash(const char* file_path);
@@ -53,6 +53,6 @@ public:
     int remove(const uint64_t &key);
     int update(const uint64_t &key, const uint64_t &value);
     void print();
-	void destroy();
+    void destroy();
 	
 };
