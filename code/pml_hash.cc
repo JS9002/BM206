@@ -12,7 +12,7 @@ PMLHash::PMLHash(const char* file_path) {
 	meta = (metadata*)start_addr;
 	table = (pm_table*)((char*)start_addr + sizeof(meta));
     
-    //初始化数据结构 
+        //初始化数据结构 
 	if(meta->size == 0){
 		meta->size = 1;
 		meta->level = 0;
