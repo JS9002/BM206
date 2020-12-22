@@ -26,7 +26,7 @@ int main(){
 				"/home/zwz/test/data/10w-rw-100-0-run.txt" };
       				//benchmark数据集绝对路径   
 	for(int i = 1 ; i < 6 ; i++){
-
+ 
 		ifstream read(file[0]);
    		if(!read.is_open()) {
 			cout << "load failed " << endl;
