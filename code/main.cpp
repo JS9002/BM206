@@ -36,7 +36,7 @@ int main() {
 	    hash.update(i, i+1);
 	    cout << "Update(" << i << ", " << i <<") -->" 
 		<< "(" << i << ", " << i+1 << ") OK!" << endl; 
-	}
+	} 
 	hash.print();
 	return 0;
 }
