@@ -8,7 +8,7 @@ using namespace std;
 uint64_t convert(string str){
    uint64_t s = str[0] - '0';
    for(int i = 1 ;i< 8 ; i++){
-       s *= 10;         //¶ÁÈ¡Ç°°Ë×Ö½Ú 
+       s *= 10;         //è¯»å–å‰å…«å­—èŠ‚ 
        s += str[i] - '0';
    }
    return s;
@@ -17,74 +17,74 @@ uint64_t convert(string str){
 int main(){     
 	PMLHash hash("/home/zwz/test/pml_hash");
 	uint64_t key  , value;
-    string op , str;
+	string op , str;
 	char file[10][50] ={"/home/zwz/test/data/10w-rw-0-100-load.txt",
-					    "/home/zwz/test/data/10w-rw-0-100-run.txt" , 
-						"/home/zwz/test/data/10w-rw-25-75-run.txt" ,
-						"/home/zwz/test/data/10w-rw-50-50-run.txt" ,
-						"/home/zwz/test/data/10w-rw-75-25-run.txt" ,
-						"/home/zwz/test/data/10w-rw-100-0-run.txt" };
-      					//benchmarkÊı¾İ¼¯¾ø¶ÔÂ·¾¶   
+				"/home/zwz/test/data/10w-rw-0-100-run.txt" , 
+				"/home/zwz/test/data/10w-rw-25-75-run.txt" ,
+				"/home/zwz/test/data/10w-rw-50-50-run.txt" ,
+				"/home/zwz/test/data/10w-rw-75-25-run.txt" ,
+				"/home/zwz/test/data/10w-rw-100-0-run.txt" };
+      				//benchmarkæ•°æ®é›†ç»å¯¹è·¯å¾„   
 	for(int i = 1 ; i < 6 ; i++){
 
 		ifstream read(file[0]);
    		if(!read.is_open()) {
         	cout << "load failed " << endl;
         	cin.get();
-			return 0;
-    	}	
-        cout<<"Start loading("<<i<<")..."<<endl;
-    	while(!read.eof()){ //¶ÁÈ¡loadÎÄ¼ş	
+		return 0;
+    		}	
+		cout<<"Start loading("<<i<<")..."<<endl;
+		while(!read.eof()){ //è¯»å–loadæ–‡ä»¶	
 			 
-       		read >> op >> str;
-       		key = convert(str);
-		hash.insert(key , key);//keyºÍvalueÄ¬ÈÏÏàµÈ
+			read >> op >> str;
+			key = convert(str);
+			hash.insert(key , key);//keyå’Œvalueé»˜è®¤ç›¸ç­‰
 		}
 
 		cout<<"Load("<<i<<") successfully!"<<endl;
-    	read.close();   
+		read.close();   
 
 		ifstream read2(file[i]);
-    	if(!read2.is_open()) {
-      		cout << "run failed " << endl;
-        	cin.get();
-        	return 0; 
-    	}
-    	int t = 0 , insert_num = 0 , read_num = 0;
-    	clock_t start , end;
-    	double time = 0;
-    	cout<<"Start running("<<i<<")..."<<endl;
-    	while(!read2.eof()){
-       		read2 >> op >> key;
-      		t++;    
-			    
-			if(op[0]=='I') {   //¡°¶ÁÈ¡µ½¡®INSERT¡¯²Ù×÷ 
-	       		insert_num++;
+		if(!read2.is_open()) {
+		cout << "run failed " << endl;
+		cin.get();
+		return 0; 
+		}
+		int t = 0 , insert_num = 0 , read_num = 0;
+		clock_t start , end;
+		double time = 0;
+		cout<<"Start running("<<i<<")..."<<endl;
+		while(!read2.eof()){
+			read2 >> op >> key;
+			t++;    
+
+			if(op[0]=='I') {   //â€œè¯»å–åˆ°â€˜INSERTâ€™æ“ä½œ 
+			insert_num++;
 				start = clock();
 				hash.insert(key , key);
 			}
-			else {      //ÆäÓàÎª¡®SEARCH¡¯²Ù×÷ 
+			else {      //å…¶ä½™ä¸ºâ€˜SEARCHâ€™æ“ä½œ 
 				read_num++;
 				start = clock();
-		    	hash.search(key , value);
+			hash.search(key , value);
 			}
-        	end = clock();
-			time += end - start;//Í³¼ÆÊ±¼ä 
-			if(t==10000) break;  //eofµÄÔ­Òò»á¶à¶ÁÒ»ĞĞ 
-    	}
-    	cout<<"Run("<<i<<") successfully!"<<endl;
-		  
-    	cout << "Operations size : " << t  << endl; //Êä³öÔËĞĞÖ¸±ê 
-    	cout << "Total time cost : " << time/1000  << " ms " << endl;//linuxÏÂÄ¬ÈÏµ¥Î»ÊÇus 
-    	cout << "Insert_num      : " << insert_num << endl;  
-    	cout << "Search_num      : " << t -  insert_num << endl;
+			end = clock();
+			time += end - start;//ç»Ÿè®¡æ—¶é—´ 
+			if(t==10000) break;  //eofçš„åŸå› ä¼šå¤šè¯»ä¸€è¡Œ 
+		}
+		cout<<"Run("<<i<<") successfully!"<<endl;
+
+		cout << "Operations size : " << t  << endl; //è¾“å‡ºè¿è¡ŒæŒ‡æ ‡ 
+		cout << "Total time cost : " << time/1000  << " ms " << endl;//linuxä¸‹é»˜è®¤å•ä½æ˜¯us 
+		cout << "Insert_num      : " << insert_num << endl;  
+		cout << "Search_num      : " << t -  insert_num << endl;
 		cout << "OPS             : " << t/(time/1000000) << endl;
 		cout << "Avg_Latency     : " << time/t << " us " << endl;  
 		cout << endl<< endl;
-    	read2.close();
-        cin.get();
-		hash.destroy(); //Çå¿Õ 
+		read2.close();
+		cin.get();
+		hash.destroy(); //æ¸…ç©º 
 	}
 
-    return 0;
+    	return 0;
 }
