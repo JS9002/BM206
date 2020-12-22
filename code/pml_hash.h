@@ -54,5 +54,4 @@ public:
     int update(const uint64_t &key, const uint64_t &value);
     void print();
     void destroy();
-	
 };
