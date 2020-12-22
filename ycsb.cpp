@@ -6,12 +6,12 @@
 using namespace std;
 
 uint64_t convert(string str){
-   uint64_t s = str[0] - '0';
-   for(int i = 1 ;i< 8 ; i++){
-       s *= 10;         //读取前八字节 
-       s += str[i] - '0';
-   }
-   return s;
+	uint64_t s = str[0] - '0';
+	for(int i = 1 ;i< 8 ; i++){
+		s *= 10;         //读取前八字节 
+		s += str[i] - '0';
+	}
+   	return s;
 }
    
 int main(){     
@@ -29,9 +29,9 @@ int main(){
 
 		ifstream read(file[0]);
    		if(!read.is_open()) {
-        	cout << "load failed " << endl;
-        	cin.get();
-		return 0;
+			cout << "load failed " << endl;
+			cin.get();
+			return 0;
     		}	
 		cout<<"Start loading("<<i<<")..."<<endl;
 		while(!read.eof()){ //读取load文件	
@@ -46,9 +46,9 @@ int main(){
 
 		ifstream read2(file[i]);
 		if(!read2.is_open()) {
-		cout << "run failed " << endl;
-		cin.get();
-		return 0; 
+			cout << "run failed " << endl;
+			cin.get();
+			return 0; 
 		}
 		int t = 0 , insert_num = 0 , read_num = 0;
 		clock_t start , end;
@@ -59,14 +59,14 @@ int main(){
 			t++;    
 
 			if(op[0]=='I') {   //“读取到‘INSERT’操作 
-			insert_num++;
+				insert_num++;
 				start = clock();
 				hash.insert(key , key);
 			}
 			else {      //其余为‘SEARCH’操作 
 				read_num++;
 				start = clock();
-			hash.search(key , value);
+				hash.search(key , value);
 			}
 			end = clock();
 			time += end - start;//统计时间 
