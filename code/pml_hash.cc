@@ -4,7 +4,7 @@
 
 PMLHash::PMLHash(const char* file_path) {
 	size_t mapped_len;
-	int is_pmem;
+	int is_pmem; 
 	if((start_addr = pmem_map_file(file_path, FILE_SIZE, PMEM_FILE_CREATE,
 		0666, &mapped_len, &is_pmem)) == NULL){
 		exit(0);
